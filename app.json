@@ -1,0 +1,23 @@
+{
+  "name": "Nest.js Ingenius test",
+  "description": "Nest.js Ingenius test application with authentication using JWT and PostgreSQL.",
+  "repository": "https://github.com/Alex-diaz00/nest-ingenius-test",
+  "keywords": [
+    "node",
+    "nestjs",
+    "passport",
+    "typescript",
+    "postgresql",
+    "authentication"
+  ],
+  "env": {
+    "APP_SECRET": {
+      "description": "A secret key for verifying the integrity of JWT.",
+      "generator": "secret"
+    }
+  },
+  "addons": ["heroku-postgresql:hobby-dev"],
+  "scripts": {
+    "postdeploy": "npm run migration:run"
+  }
+}

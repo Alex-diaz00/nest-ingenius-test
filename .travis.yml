@@ -1,0 +1,33 @@
+language: node_js
+
+services:
+  - postgresql
+
+node_js:
+  - 22
+
+notifications:
+  email: false
+
+cache:
+  yarn: true
+  directories:
+    - node_modules
+
+install:
+  - yarn install
+  - yarn global add newman
+
+before_script:
+  - psql -c "create database ${POSTGRES_DB};" -U $POSTGRES_USER
+  - yarn build --if-present
+  - yarn typeorm migration:run
+  - yarn fixtures
+
+script:
+  - yarn lint --if-present
+  - yarn test:cov
+  - yarn test:e2e
+  - NODE_ENV=production yarn start &
+  - sleep 10
+  - newman run https://www.getpostman.com/collections/6b82b259fc751deda654
