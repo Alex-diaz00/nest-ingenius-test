@@ -6201,9 +6201,9 @@ typedarray@^0.0.6:
   integrity sha512-/aCDEGatGvZ2BIk+HmLf4ifCJFwvKFNb9/JeZPMulfgFracn9QFcAf5GO8B/mweUjSoblS5In0cWhqpfs/5PQA==
 
 typeorm-extension@^3.0.1:
-  version "3.7.0"
-  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-3.7.0.tgz#44b1b1b42ecd91813c2bb5c368e1be42cbbdc0cb"
-  integrity sha512-ogiIA7DecOQcaBjzFbowLuZD1qFTbh8mlgHh81fHpJnpJDitzuP0CxsP1iJFdjqM4FJfqjZhOHQvAhSFsxcHDQ==
+  version "3.7.1"
+  resolved "https://registry.yarnpkg.com/typeorm-extension/-/typeorm-extension-3.7.1.tgz#180c5744466c2209a8ce4e589104470bdb80d635"
+  integrity sha512-SwpLlrMkRLvDSUtDbM4XM0SxhedPFW24i5sDmUV2sLogoMje0lOE5f3t3BKHR4apKUYaAxq+TiL9BhIqXx3bUA==
   dependencies:
     "@faker-js/faker" "^8.4.1"
     consola "^3.4.0"
