@@ -42,10 +42,22 @@ Start the services using Docker Compose
   docker-compose up -d
 ```
 
+Create the DB
+
+```bash
+  yarn db:create
+```
+
 Run migrations to create the DB schema
 
 ```bash
   yarn typeorm migration:run
+```
+
+Run seeders
+
+```bash
+  yarn db:seed
 ```
 
 Start the server
