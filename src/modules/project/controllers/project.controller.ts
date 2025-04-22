@@ -48,13 +48,30 @@ export class ProjectController {
     return this.service.createProject(newProject);
   }
 
+  @Get('member')
+  @UseInterceptors(PaginationInterceptor)
+  listProjectsWhereUserIsMember(
+    @Query() pagination: PaginationQuery,
+    @AuthUser() user: User,
+  ): Promise<[Project[], number]> {
+    return this.service.listProjectsWhereMember(pagination, user);
+  }
+
+  @Get('owner')
+  @UseInterceptors(PaginationInterceptor)
+  listProjectsWhereUserIsOwner(
+    @Query() pagination: PaginationQuery,
+    @AuthUser() user: User,
+  ): Promise<[Project[], number]> {
+    return this.service.listProjectsWhereOwner(pagination, user);
+  }
+
   @Get()
   @UseInterceptors(PaginationInterceptor)
   listProject(
     @Query() pagination: PaginationQuery,
-    @AuthUser() user: User,
   ): Promise<[Project[], number]> {
-    return this.service.listProject(pagination, user);
+    return this.service.listProject(pagination);
   }
 
   @Get(':id')
@@ -82,21 +99,10 @@ export class ProjectController {
 
   @Patch(':id/members')
   @UseInterceptors(IsOwnerInterceptor)
-async updateProjectMembers(
-  @Param('id', ParseIntPipe, ParseProjectPipe) project: Project,
-  @Body() dto: UpdateProjectMembersDto,
-): Promise<Project> {
-  return this.service.updateMembers(project, dto);
-}
-
-@Get('member')
-listProjectsWhereUserIsMember(@AuthUser() user: User): Promise<Project[]> {
-  return this.service.listProjectsWhereMember(user);
-}
-
-@Get('owner')
-listProjectsWhereUserIsOwner(@AuthUser() user: User): Promise<Project[]> {
-  return this.service.listProjectsWhereOwner(user);
-}
-
+  async updateProjectMembers(
+    @Param('id', ParseIntPipe, ParseProjectPipe) project: Project,
+    @Body() dto: UpdateProjectMembersDto,
+  ): Promise<Project> {
+    return this.service.updateMembers(project, dto);
+  }
 }

@@ -37,21 +37,19 @@ export class ProjectService {
 
   async listProject(
     pagination: PaginationQuery,
-    owner: User,
   ): Promise<[Project[], number]> {
     return this.repo.findAndCount({
-      where: { owner: { id: owner.id } },
+      relations: ['members', 'owner'],
       order: { createdAt: 'DESC' },
       skip: pagination.offset,
       take: pagination.limit,
-      loadRelationIds: true,
     });
   }
 
   async getProject(id: number): Promise<Project> {
     return this.repo.findOneOrFail({
       where: { id },
-      loadRelationIds: true,
+      relations: ['members', 'owner'],
     });
   }
 
@@ -101,22 +99,33 @@ export class ProjectService {
     return results.map(t => t.id);
   }
 
-  async listProjectsWhereMember(user: User): Promise<Project[]> {
-    return this.repo
-      .createQueryBuilder('project')
-      .leftJoin('project.members', 'member')
-      .where('member.id = :userId', { userId: user.id })
-      .leftJoinAndSelect('project.owner', 'owner')
-      .leftJoinAndSelect('project.members', 'members')
-      .orderBy('project.createdAt', 'DESC')
-      .getMany();
+  async listProjectsWhereMember(
+    pagination: PaginationQuery,
+    user: User,
+  ): Promise<[Project[], number]> {
+    const query = this.repo
+    .createQueryBuilder('project')
+    .innerJoin('project.members', 'member', 'member.id = :userId', { userId: user.id })
+    .leftJoinAndSelect('project.members', 'members')
+    .leftJoinAndSelect('project.owner', 'owner')    
+    .orderBy('project.createdAt', 'DESC')
+    .skip(pagination.offset)
+    .take(pagination.limit);
+
+  const [projects, count] = await query.getManyAndCount();
+  return [projects, count];
   }
   
-  async listProjectsWhereOwner(user: User): Promise<Project[]> {
-    return this.repo.find({
-      where: { owner: { id: user.id } },
+  async listProjectsWhereOwner(
+    pagination: PaginationQuery,
+    owner: User,
+  ): Promise<[Project[], number]> {
+    return this.repo.findAndCount({
+      where: { owner: { id: owner.id } },
       relations: ['members', 'owner'],
       order: { createdAt: 'DESC' },
+      skip: pagination.offset,
+      take: pagination.limit,
     });
   }
   
