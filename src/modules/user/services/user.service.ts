@@ -4,6 +4,7 @@ import { Repository, FindOneOptions } from 'typeorm';
 
 import { User } from '../entities/user.entity';
 import { UserUpdate } from '../dto/user-update.dto';
+import { PaginationQuery } from 'src/common/pagination/dtos/pagination-query.dto';
 
 @Injectable()
 export class UserService {
@@ -41,4 +42,10 @@ export class UserService {
 
     return this.userRepository.save(user);
   }
+
+  async list(): Promise<User[]> {
+      return this.userRepository.find({
+        order: { name: 'ASC' },
+      });
+    }
 }
