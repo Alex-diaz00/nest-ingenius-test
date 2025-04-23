@@ -59,7 +59,8 @@ export class ProjectService {
   }
 
   async removeProject(project: Project): Promise<Project> {
-    return this.repo.softRemove(project);
+    await this.repo.softRemove(project);
+    return project;
   }
 
   async updateMembers(project: Project, dto: UpdateProjectMembersDto): Promise<Project> {

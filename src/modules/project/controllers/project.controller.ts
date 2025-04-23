@@ -31,6 +31,8 @@ import { ParseProjectPipe } from '../pipes/parse-project.pipe';
 import { ProjectService } from '../services/project.service';
 import { PaginationQuery } from 'src/common/pagination/dtos/pagination-query.dto';
 import { UpdateProjectMembersDto } from '../dtos/update-project-members.dto';
+import { GuardsConsumer } from '@nestjs/core/guards';
+import { IsProjectOwnerGuard } from '../guards/is-owner.guard';
 
 @Controller('project')
 @UseGuards(SessionAuthGuard, JWTAuthGuard)
@@ -80,7 +82,7 @@ export class ProjectController {
   }
 
   @Put(':id')
-  @UseInterceptors(IsOwnerInterceptor)
+  @UseGuards(IsProjectOwnerGuard)
   updateProject(
     @Param('id', ParseIntPipe, ParseProjectPipe) project: Project,
     @Body() updates: ProjectUpdate,
@@ -90,7 +92,7 @@ export class ProjectController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  @UseInterceptors(IsOwnerInterceptor)
+  @UseGuards(IsProjectOwnerGuard)
   removeProject(
     @Param('id', ParseIntPipe, ParseProjectPipe) project: Project,
   ): Promise<Project> {
@@ -98,7 +100,7 @@ export class ProjectController {
   }
 
   @Patch(':id/members')
-  @UseInterceptors(IsOwnerInterceptor)
+  @UseGuards(IsProjectOwnerGuard)
   async updateProjectMembers(
     @Param('id', ParseIntPipe, ParseProjectPipe) project: Project,
     @Body() dto: UpdateProjectMembersDto,
