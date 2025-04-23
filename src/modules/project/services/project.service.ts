@@ -74,15 +74,17 @@ export class ProjectService {
     await this.repo.save(project);
   
     if (membersToRemove.length) {
-      await this.taskRepo
-        .createQueryBuilder()
-        .update('task_assignees')
-        .set({ userId: project.owner.id })
-        .where('taskId IN (:...taskIds)', {
-          taskIds: await this.getTasksByRemovedUsers(project.id, membersToRemove),
-        })
-        .andWhere('userId IN (:...removed)', { removed: membersToRemove })
-        .execute();
+      const taskIds = await this.getTasksByRemovedUsers(project.id, membersToRemove);
+  
+      if (taskIds.length > 0) {
+        await this.taskRepo
+          .createQueryBuilder()
+          .update('task_assignees')
+          .set({ userId: project.owner.id })
+          .where('taskId IN (:...taskIds)', { taskIds })
+          .andWhere('userId IN (:...removed)', { removed: membersToRemove })
+          .execute();
+      }
     }
   
     return project;
