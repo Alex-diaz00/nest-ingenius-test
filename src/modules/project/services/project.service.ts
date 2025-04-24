@@ -39,7 +39,7 @@ export class ProjectService {
     pagination: PaginationQuery,
   ): Promise<[Project[], number]> {
     return this.repo.findAndCount({
-      relations: ['members', 'owner'],
+      relations: ['members', 'owner', 'tasks', 'tasks.assignees'],
       order: { createdAt: 'DESC' },
       skip: pagination.offset,
       take: pagination.limit,
@@ -49,7 +49,7 @@ export class ProjectService {
   async getProject(id: number): Promise<Project> {
     return this.repo.findOneOrFail({
       where: { id },
-      relations: ['members', 'owner'],
+      relations: ['members', 'owner', 'tasks', 'tasks.assignees'],
     });
   }
 
