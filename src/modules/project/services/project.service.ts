@@ -131,5 +131,15 @@ export class ProjectService {
       take: pagination.limit,
     });
   }
+
+  async getProjectTasks(project: Project, pagination: PaginationQuery): Promise<[Task[], number]> {
+    return this.taskRepo.findAndCount({
+      where: { project: { id: project.id } },
+      order: { createdAt: 'DESC' },
+      skip: pagination.offset,
+      take: pagination.limit,
+      relations: ['assignees', 'project', 'project.owner', 'project.members'],
+    });
+  }
   
 }

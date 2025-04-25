@@ -31,8 +31,8 @@ import { ParseProjectPipe } from '../pipes/parse-project.pipe';
 import { ProjectService } from '../services/project.service';
 import { PaginationQuery } from 'src/common/pagination/dtos/pagination-query.dto';
 import { UpdateProjectMembersDto } from '../dtos/update-project-members.dto';
-import { GuardsConsumer } from '@nestjs/core/guards';
 import { IsProjectOwnerGuard } from '../guards/is-owner.guard';
+import { Task } from 'src/modules/task/entities/task.entity';
 
 @Controller('project')
 @UseGuards(SessionAuthGuard, JWTAuthGuard)
@@ -79,6 +79,15 @@ export class ProjectController {
   @Get(':id')
   getProject(@Param('id', ParseIntPipe) id: number): Promise<Project> {
     return this.service.getProject(id);
+  }
+
+  @Get(':projectId/tasks')
+  @UseInterceptors(PaginationInterceptor)
+  getProjectTasks(
+    @Param('projectId', ParseIntPipe, ParseProjectPipe) project: Project,
+    @Query() pagination: PaginationQuery,
+  ): Promise<[Task[], number]> {
+    return this.service.getProjectTasks(project, pagination);
   }
 
   @Put(':id')
