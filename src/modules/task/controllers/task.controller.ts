@@ -1,5 +1,6 @@
 import {
   Body,
+  ClassSerializerInterceptor,
   Controller,
   Delete,
   Get,
@@ -26,12 +27,12 @@ import { PaginationInterceptor } from '../../../common/pagination/interceptors/p
 import { ParseTaskPipe } from '../pipes/parse-task.pipe';
 import { TaskService } from '../services/task.service';
 import { PaginationQuery } from 'src/common/pagination/dtos/pagination-query.dto';
-import { IsTaskAssigneeInterceptor } from '../interceptors/is-task-assignee.interceptor';
+import { IsTaskAssigneeGuard } from '../guards/is-task-assignee.guard';
 
 @Controller('task')
 @UseGuards(SessionAuthGuard, JWTAuthGuard)
 @UseFilters(TaskFilter)
-@UseInterceptors(PaginationInterceptor)
+@UseInterceptors(ClassSerializerInterceptor)
 export class TaskController {
   constructor(private readonly service: TaskService) {}
 
@@ -41,6 +42,7 @@ export class TaskController {
   }
 
   @Get()
+  @UseInterceptors(PaginationInterceptor)
   listTask(@Query() pagination: PaginationQuery): Promise<[Task[], number]> {
     return this.service.listTask(pagination);
   }
@@ -51,7 +53,7 @@ export class TaskController {
   }
 
   @Put(':id')
-  @UseInterceptors(IsTaskAssigneeInterceptor)
+  @UseGuards(IsTaskAssigneeGuard)
   updateTask(
     @Param('id', ParseIntPipe, ParseTaskPipe) task: Task,
     @Body() updates: TaskUpdateDto,
@@ -60,7 +62,7 @@ export class TaskController {
   }
 
   @Delete(':id')
-  @UseInterceptors(IsTaskAssigneeInterceptor)
+  @UseGuards(IsTaskAssigneeGuard)
   @HttpCode(HttpStatus.NO_CONTENT)
   removeTask(
     @Param('id', ParseIntPipe, ParseTaskPipe) task: Task,
