@@ -72,15 +72,27 @@ export class TaskService {
     userId: number,
     pagination: PaginationQuery,
   ): Promise<[Task[], number]> {
-    return this.repo.findAndCount({
-      where: {
-        assignees: { id: userId },
-      },
-      relations: ['assignees', 'project'],
-      skip: pagination.offset,
-      take: pagination.limit,
-      order: { createdAt: 'DESC' },
-    });
+    const query = this.repo
+      .createQueryBuilder('task')
+      .leftJoinAndSelect('task.assignees', 'assignees')
+      .leftJoinAndSelect('task.project', 'project')
+      .where(qb => {
+        const subQuery = qb
+          .subQuery()
+          .select('task_sub.id')
+          .from(Task, 'task_sub')
+          .leftJoin('task_sub.assignees', 'a')
+          .where('a.id = :userId')
+          .getQuery();
+        return 'task.id IN ' + subQuery;
+      })
+      .setParameter('userId', userId)
+      .skip(pagination.offset)
+      .take(pagination.limit)
+      .orderBy('task.createdAt', 'DESC');
+  
+    const [tasks, count] = await query.getManyAndCount();
+    return [tasks, count];
   }
   
 }
