@@ -69,4 +69,13 @@ export class TaskController {
   ): Promise<Task> {
     return this.service.removeTask(task);
   }
+
+  @Get('/user/:userId')
+  @UseInterceptors(PaginationInterceptor)
+  listTasksByUser(
+    @Param('userId', ParseIntPipe) userId: number,
+    @Query() pagination: PaginationQuery,
+  ): Promise<[Task[], number]> {
+    return this.service.listTasksByUser(userId, pagination);
+  }
 }

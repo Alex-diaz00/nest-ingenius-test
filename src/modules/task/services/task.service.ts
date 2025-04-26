@@ -67,4 +67,20 @@ export class TaskService {
   async removeTask(task: Task): Promise<Task> {
     return this.repo.softRemove(task);
   }
+
+  async listTasksByUser(
+    userId: number,
+    pagination: PaginationQuery,
+  ): Promise<[Task[], number]> {
+    return this.repo.findAndCount({
+      where: {
+        assignees: { id: userId },
+      },
+      relations: ['assignees', 'project'],
+      skip: pagination.offset,
+      take: pagination.limit,
+      order: { createdAt: 'DESC' },
+    });
+  }
+  
 }
