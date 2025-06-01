@@ -978,9 +978,9 @@
     check-disk-space "3.4.0"
 
 "@nestjs/testing@^11.0.20":
-  version "11.0.20"
-  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-11.0.20.tgz#32ba2f992ab64cf191b403efb4e7ebac8448c7a7"
-  integrity sha512-3o+HWsVfA46tt81ctKuNj5ufL9srfmp3dQBCAIx9fzvjooEKwWl5L69AcvDh6JhdB79jhhM1lkSSU+1fBGbxgw==
+  version "11.1.2"
+  resolved "https://registry.yarnpkg.com/@nestjs/testing/-/testing-11.1.2.tgz#af5f03f1b58318db7d5a0b1dbf7006bc8145d288"
+  integrity sha512-BQxVKUVW6gzEbbHAvmg5RgcP3s++pRgTCmsgaDF/DtcLRUeKi8SjAdqzLm14xbkMeibxOf3fNqM2iwqUKj8ffw==
   dependencies:
     tslib "2.8.1"
 
